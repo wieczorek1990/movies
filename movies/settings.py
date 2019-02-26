@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -120,4 +121,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-OMBD_API_KEY = os.environ.get('OMBD_API_KEY')
+OMDB_API_KEY = os.environ.get('OMDB_API_KEY')
