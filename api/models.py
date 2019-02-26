@@ -9,7 +9,13 @@ class Movie(models.Model):
     # other
     director = models.TextField()
 
+    def __str__(self):
+        return self.title
+
 
 class Comment(models.Model):
     body = models.TextField()
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.body[:32]

@@ -24,6 +24,7 @@ from api import views
 
 router = routers.DefaultRouter()
 router.register(r'movies', views.MovieViewSet)
+router.register(r'comments', views.CommentViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

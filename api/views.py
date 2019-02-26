@@ -1,9 +1,11 @@
 import requests
 from django.conf import settings
+from rest_framework import filters as rest_framework_filters
 from rest_framework import viewsets
 from rest_framework import response
 from rest_framework import status
 
+from api import filters
 from api import models
 from api import serializers
 
@@ -11,6 +13,8 @@ from api import serializers
 class MovieViewSet(viewsets.ModelViewSet):
     queryset = models.Movie.objects.all()
     serializer_class = serializers.MovieSerializer
+    filter_backends = (rest_framework_filters.OrderingFilter,)
+    ordering_fileds = '__all__'
 
     @staticmethod
     def get_omdb_api_url(title):
@@ -36,3 +40,9 @@ class MovieViewSet(viewsets.ModelViewSet):
                 return response.Response(status=status.HTTP_400_BAD_REQUEST)
         else:
             return response.Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = models.Comment.objects.all()
+    serializer_class = serializers.CommentSerializer
+    filter_class = filters.CommentFilter

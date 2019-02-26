@@ -9,5 +9,11 @@ class MovieSerializer(serializers.ModelSerializer):
         fields = ('title', 'response', 'director')
 
 
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Comment
+        fields = ('body', 'movie')
+
+
 class MovieTitleSerializer(serializers.Serializer):
     title = serializers.CharField()
