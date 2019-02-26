@@ -16,6 +16,7 @@ class Movie(models.Model):
 class Comment(models.Model):
     body = models.TextField()
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.body[:32]

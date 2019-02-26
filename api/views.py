@@ -1,6 +1,8 @@
 import requests
 from django.conf import settings
+from django.db.models import Count
 from rest_framework import filters as rest_framework_filters
+from rest_framework import views
 from rest_framework import viewsets
 from rest_framework import response
 from rest_framework import status
@@ -46,3 +48,27 @@ class CommentViewSet(viewsets.ModelViewSet):
     queryset = models.Comment.objects.all()
     serializer_class = serializers.CommentSerializer
     filter_class = filters.CommentFilter
+
+
+class MovieCommentView(views.APIView):
+    def get(self, request):
+        queryset = models.Movie.objects\
+                               .annotate(total_comments=Count('comment'))\
+                               .order_by('-total_comments')
+
+        current_rank = 0
+        last_movie = None
+        for index, movie in enumerate(queryset):
+            if last_movie is None:
+                current_rank += 1
+            else:
+                if last_movie.total_comments != movie.total_comments:
+                    current_rank += 1
+            movie.rank = current_rank
+            last_movie = movie
+
+        serializer = serializers.MovieCommentResponseSerializer(
+            queryset, many=True)
+
+        return response.Response(status=status.HTTP_200_OK,
+                                 data=serializer.data)

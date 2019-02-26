@@ -29,4 +29,5 @@ router.register(r'comments', views.CommentViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
+    path('top/', views.MovieCommentView.as_view()),
 ]
