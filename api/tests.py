@@ -1,3 +1,13 @@
 from django.test import TestCase
 
-# Create your tests here.
+
+class MovieTestCase(TestCase):
+    pass
+
+
+class CommentTestCase(TestCase):
+    pass
+
+
+class MovieCommentTestCase(TestCase):
+    pass

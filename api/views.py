@@ -52,16 +52,29 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 class MovieCommentView(views.APIView):
     def get(self, request):
+        serializer = serializers.MovieCommentRequestSerializer(
+            data=request.data)
+
+        if not serializer.is_valid():
+            return response.Response(status=status.HTTP_400_BAD_REQUEST)
+
+        comment_ids = models.Comment.objects\
+                                    .filter(
+            created_at__gte=serializer.validated_data['from_date'],
+            created_at__lte=serializer.validated_data['to_date'])\
+                                    .values_list('id', flat=True)
         queryset = models.Movie.objects\
                                .annotate(total_comments=Count('comment'))\
-                               .order_by('-total_comments')
+                               .order_by('-total_comments')\
+                               .filter(comment__id__in=comment_ids)
+        queryset |= models.Movie.objects\
+                                .annotate(total_comments=Count('comment'))\
+                                .filter(total_comments=0)
 
-        current_rank = 0
+        current_rank = 1
         last_movie = None
-        for index, movie in enumerate(queryset):
-            if last_movie is None:
-                current_rank += 1
-            else:
+        for movie in queryset:
+            if last_movie is not None:
                 if last_movie.total_comments != movie.total_comments:
                     current_rank += 1
             movie.rank = current_rank
